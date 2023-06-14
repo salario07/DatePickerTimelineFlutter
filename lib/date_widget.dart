@@ -16,6 +16,9 @@ class DateWidget extends StatelessWidget {
   final Color selectionColor;
   final DateSelectionCallback? onDateSelected;
   final String? locale;
+  final EdgeInsetsGeometry? itemPadding;
+  final EdgeInsetsGeometry? itemMargin;
+  final double? borderRadius;
 
   DateWidget({
     required this.date,
@@ -26,6 +29,9 @@ class DateWidget extends StatelessWidget {
     this.width,
     this.onDateSelected,
     this.locale,
+    this.itemPadding,
+    this.itemMargin,
+    this.borderRadius,
   });
 
   @override
@@ -33,22 +39,24 @@ class DateWidget extends StatelessWidget {
     return InkWell(
       child: Container(
         width: width,
-        margin: EdgeInsets.all(3.0),
+        margin: itemMargin ?? EdgeInsets.all(3.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 8.0)),
           color: selectionColor,
         ),
         child: Padding(
-          padding: EdgeInsets.all(8),
+          padding: itemPadding ?? EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(new DateFormat("MMM", locale).format(date).toUpperCase(), // Month
+              Text(new DateFormat("MMM", locale).format(date).toUpperCase(),
+                  // Month
                   style: monthTextStyle),
               Text(date.day.toString(), // Date
                   style: dateTextStyle),
-              Text(new DateFormat("E", locale).format(date).toUpperCase(), // WeekDay
+              Text(new DateFormat("E", locale).format(date).toUpperCase(),
+                  // WeekDay
                   style: dayTextStyle)
             ],
           ),
