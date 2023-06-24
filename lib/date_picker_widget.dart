@@ -58,8 +58,10 @@ class DatePicker extends StatefulWidget {
   /// Locale for the calendar default: en_us
   final String locale;
 
+  final List<BoxShadow>? selectionBoxShadows;
+
   final EdgeInsetsGeometry? itemPadding;
-  final EdgeInsetsGeometry? itemMargin;
+  final EdgeInsetsGeometry? Function(int index)? itemMargin;
   final EdgeInsetsGeometry? listViewPadding;
   final double? borderRadius;
 
@@ -84,6 +86,7 @@ class DatePicker extends StatefulWidget {
     this.itemMargin,
     this.listViewPadding,
     this.borderRadius,
+    this.selectionBoxShadows,
     this.locale = "en_US",
   }) : assert(
             activeDates == null || inactiveDates == null,
@@ -203,8 +206,9 @@ class _DatePickerState extends State<DatePicker> {
             selectionColor:
                 isSelected ? widget.selectionColor : Colors.transparent,
             itemPadding: widget.itemPadding,
-            itemMargin: widget.itemMargin,
+            itemMargin: widget.itemMargin?.call(index),
             borderRadius: widget.borderRadius,
+            selectionBoxShadows: isSelected ? widget.selectionBoxShadows : null,
             onDateSelected: (selectedDate) {
               // Don't notify listener if date is deactivated
               if (isDeactivated) return;

@@ -19,6 +19,7 @@ class DateWidget extends StatelessWidget {
   final EdgeInsetsGeometry? itemPadding;
   final EdgeInsetsGeometry? itemMargin;
   final double? borderRadius;
+  final List<BoxShadow>? selectionBoxShadows;
 
   DateWidget({
     required this.date,
@@ -32,6 +33,7 @@ class DateWidget extends StatelessWidget {
     this.itemPadding,
     this.itemMargin,
     this.borderRadius,
+    this.selectionBoxShadows,
   });
 
   @override
@@ -43,6 +45,7 @@ class DateWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 8.0)),
           color: selectionColor,
+          boxShadow: selectionBoxShadows,
         ),
         child: Padding(
           padding: itemPadding ?? EdgeInsets.all(8),
