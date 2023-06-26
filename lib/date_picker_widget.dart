@@ -140,7 +140,8 @@ class _DatePickerState extends State<DatePicker> {
 
   @override
   void didUpdateWidget(final DatePicker oldWidget) {
-    if (oldWidget.initialSelectedDate != widget.initialSelectedDate) {
+    if (!DateUtils.isSameDay(
+        oldWidget.initialSelectedDate, widget.initialSelectedDate)) {
       _currentDate = widget.initialSelectedDate;
     }
     super.didUpdateWidget(oldWidget);
