@@ -139,6 +139,14 @@ class _DatePickerState extends State<DatePicker> {
   }
 
   @override
+  void didUpdateWidget(final DatePicker oldWidget) {
+    if (oldWidget.initialSelectedDate != widget.initialSelectedDate) {
+      _currentDate = widget.initialSelectedDate;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
