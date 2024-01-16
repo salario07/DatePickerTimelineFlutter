@@ -2,6 +2,7 @@ import 'package:date_picker_timeline/date_widget.dart';
 import 'package:date_picker_timeline/extra/color.dart';
 import 'package:date_picker_timeline/extra/style.dart';
 import 'package:date_picker_timeline/gestures/tap.dart';
+import 'package:date_picker_timeline/typedefs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -65,6 +66,9 @@ class DatePicker extends StatefulWidget {
   final EdgeInsetsGeometry? listViewPadding;
   final double? borderRadius;
 
+  final DateTileBuilder? tileBuilder;
+  final double spacing;
+
   DatePicker(
     this.startDate, {
     Key? key,
@@ -85,8 +89,10 @@ class DatePicker extends StatefulWidget {
     this.itemPadding,
     this.itemMargin,
     this.listViewPadding,
+    this.tileBuilder,
     this.borderRadius,
     this.selectionBoxShadows,
+    this.spacing = 0,
     this.locale = "en_US",
   }) : assert(
             activeDates == null || inactiveDates == null,
@@ -150,11 +156,14 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) => Container(
         height: widget.height,
-        child: ListView.builder(
+        child: ListView.separated(
           padding: widget.listViewPadding,
           itemCount: widget.daysCount,
           scrollDirection: Axis.horizontal,
           controller: _controller,
+          separatorBuilder: (context, index) => SizedBox(
+            width: widget.spacing,
+          ),
           itemBuilder: (context, index) {
             // get the date object based on the index position
             // if widget.startDate is null then use the initialDateValue
@@ -193,6 +202,20 @@ class _DatePickerState extends State<DatePicker> {
                 ? _compareDate(date, _currentDate!)
                 : false;
 
+            if (widget.tileBuilder != null) {
+              return InkWell(
+                onTap: () => _onDateSelected(
+                  date,
+                  isDeactivated,
+                ),
+                child: widget.tileBuilder!.call(
+                  date,
+                  isSelected,
+                  isDeactivated,
+                ),
+              );
+            }
+
             // Return the Date Widget
             return DateWidget(
               date: date,
@@ -220,18 +243,10 @@ class _DatePickerState extends State<DatePicker> {
               borderRadius: widget.borderRadius,
               selectionBoxShadows:
                   isSelected ? widget.selectionBoxShadows : null,
-              onDateSelected: (selectedDate) {
-                // Don't notify listener if date is deactivated
-                if (isDeactivated) return;
-
-                // A date is selected
-                if (widget.onDateChange != null) {
-                  widget.onDateChange!(selectedDate);
-                }
-                setState(() {
-                  _currentDate = selectedDate;
-                });
-              },
+              onDateSelected: (selectedDate) => _onDateSelected(
+                selectedDate,
+                isDeactivated,
+              ),
             );
           },
         ),
@@ -243,6 +258,22 @@ class _DatePickerState extends State<DatePicker> {
       date1.day == date2.day &&
       date1.month == date2.month &&
       date1.year == date2.year;
+
+  void _onDateSelected(
+    final DateTime selectedDate,
+    bool isDeactivated,
+  ) {
+    // Don't notify listener if date is deactivated
+    if (isDeactivated) return;
+
+    // A date is selected
+    if (widget.onDateChange != null) {
+      widget.onDateChange!(selectedDate);
+    }
+    setState(() {
+      _currentDate = selectedDate;
+    });
+  }
 }
 
 class DatePickerController {
@@ -313,6 +344,6 @@ class DatePickerController {
         _datePickerState!.widget.startDate.day);
 
     final int offset = date.difference(startDate).inDays;
-    return (offset * _datePickerState!.widget.width) + (offset * 6);
+    return (offset * (_datePickerState!.widget.width)) + (offset * 6);
   }
 }
