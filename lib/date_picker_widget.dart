@@ -208,6 +208,13 @@ class _DatePickerState extends State<DatePicker> {
                   date,
                   isDeactivated,
                 ),
+                borderRadius: widget.borderRadius != null
+                    ? BorderRadius.all(
+                        Radius.circular(
+                          widget.borderRadius!,
+                        ),
+                      )
+                    : null,
                 child: widget.tileBuilder!.call(
                   date,
                   isSelected,
